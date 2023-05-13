@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FarmaciaDyM.Data.Entities
+{
+    public class Producto
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public decimal Costo { get; set; }
+        public decimal Precio { get; set; }
+        public int Existencia { get; set; }
+        public DateTime FechaDeCaducidad { get; set; }
+        public int ProveedorId { get; set; }
+
+        [ForeignKey(nameof(ProveedorId))]
+        public virtual Proveedor Proveedor { get; set; }
+
+    }
+}
