@@ -15,4 +15,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Response\" />
+    <Folder Include="Data\Request\" />
+  </ItemGroup>
+
 </Project>
