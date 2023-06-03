@@ -1,4 +1,7 @@
-﻿namespace FarmaciaDyM.Data.Entities
+﻿using FarmaciaDyM.Data.Request;
+using FarmaciaDyM.Data.Response;
+
+namespace FarmaciaDyM.Data.Entities
 {
     public class Cliente
     {
@@ -10,6 +13,46 @@
         public string Direccion { get; set; } = null!;
         public ICollection<Venta> Ventas { get; set; }
 
+        public static Cliente crear(ClientesRequest clientes)
+      => new Cliente()
+      {
+          Nombre = clientes.Nombre,
+          Telefono = clientes.Telefono,
+          Direccion = clientes.Direccion,
+      };
+        public bool Modificar(ClientesRequest clientes)
+        {
+            var cambio = false;
+            if (Nombre != clientes.Nombre)
+            {
+                Nombre = clientes.Nombre;
+                cambio = true;
+            }
+            if (Telefono != clientes.Telefono)
+            {
+                Telefono = clientes.Telefono;
+                cambio = true;
+            }
+            if (Direccion != clientes.Direccion)
+            {
+                Direccion = clientes.Direccion;
+                cambio = true;
+            }
+
+            return cambio;
+
+        }
+
+        public ClienteResponse ToResponse()
+          => new ClienteResponse()
+          {
+              Nombre = Nombre,
+              Telefono = Telefono,
+              Direccion = Direccion,
+          };
+
+             
+            
 
     }
 }

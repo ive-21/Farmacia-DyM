@@ -1,0 +1,10 @@
+﻿namespace FarmaciaDyM.Data.Response
+{
+    public class ProveedorResponse
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public string Telefono { get; set; }
+
+    }
+}
