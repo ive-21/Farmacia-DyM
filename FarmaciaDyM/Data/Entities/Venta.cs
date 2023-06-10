@@ -55,9 +55,14 @@ namespace FarmaciaDyM.Data.Entities
         }
 
 
-        public ClienteResponse ToResponse()
-          => new ClienteResponse()
+        public VentaResponse ToResponse()
+          => new VentaResponse()
           {
+             Id = Id,
+             ClienteId = ClienteId,
+             Total = Total,
+             Fecha = Fecha, 
+             Detalles = Detalles,
              
           };
     }

@@ -27,8 +27,12 @@ namespace FarmaciaDyM.Data.Context
         {
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
-    };
 
+        public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
 
 

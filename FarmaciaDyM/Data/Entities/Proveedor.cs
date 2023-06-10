@@ -37,12 +37,15 @@ namespace FarmaciaDyM.Data.Entities
         }
 
 
+        public ProveedorResponse ToResponse()
+         => new ProveedorResponse()
+         {
+             Id = Id,
+             Nombre = Nombre,
+             Telefono = Telefono,
+             
+         };
 
-        public ClienteResponse ToResponse()
-          => new ClienteResponse()
-          {
-            
-          };
     }
 
 }

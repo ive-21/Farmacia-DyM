@@ -44,10 +44,14 @@ namespace FarmaciaDyM.Data.Entities
         }
 
 
-        public ClienteResponse ToResponse()
-          => new ClienteResponse()
+        public UsuariosResponse ToResponse()
+          => new UsuariosResponse()
           {
-              
+              Id = Id,
+              Nombre = Nombre,
+              Rol = Rol, 
+              CorreoElectronico = CorreoElectronico,
+              Clave = Clave,
           };
     }
 

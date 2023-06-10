@@ -1,5 +1,6 @@
 using FarmaciaDyM.Data;
 using FarmaciaDyM.Data.Context;
+using FarmaciaDyM.Data.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -11,6 +12,13 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddScoped<IMyDbContext, MyDbContext>();
+builder.Services.AddScoped<IClienteServicescs, ClienteServicescs>();
+builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
+builder.Services.AddScoped<IProductoServices, ProductoServices>();
+builder.Services.AddScoped<IProveedorServices, ProveedorServices>();
+builder.Services.AddScoped<IVentaDetalleServices, VentaDetalleServices>();
+builder.Services.AddScoped<IVentaServices, VentaServices>();
+
 
 var app = builder.Build();
 

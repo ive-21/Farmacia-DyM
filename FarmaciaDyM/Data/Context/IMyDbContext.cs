@@ -13,5 +13,6 @@ namespace FarmaciaDyM.Data.Context
         DbSet<Venta> Ventas { get; set; }
 
        public Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default);
+        Task SaveChangesAsync();
     }
 }
