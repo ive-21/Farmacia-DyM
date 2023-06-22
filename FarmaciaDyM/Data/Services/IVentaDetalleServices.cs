@@ -6,8 +6,8 @@ namespace FarmaciaDyM.Data.Services
     public interface IVentaDetalleServices
     {
         Task<Result<List<VentaDetalleResponse>>> Consultar(string Filtro);
-        Task<Resultados> Crear(VentasDetalleRequest request);
-        Task<Resultados> Eliminar(VentasDetalleRequest request);
-        Task<Resultados> Modificar(VentasDetalleRequest request);
+        Task<Resultando> Crear(VentasDetalleRequest request);
+        Task<Resultando> Eliminar(VentasDetalleRequest request);
+        Task<Resultando> Modificar(VentasDetalleRequest request);
     }
 }

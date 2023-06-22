@@ -31,7 +31,7 @@ namespace FarmaciaDyM.Data.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<Resultados> Crear(ProveedorRequest request)
+        public async Task<Resultando> Crear(ProveedorRequest request)
         {
             try
             {
@@ -40,31 +40,31 @@ namespace FarmaciaDyM.Data.Services
 
                 dbContext.Proveedores.Add(proveedor);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Result() { Message= "OK", Success= true };
 
             }
 
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Result() { message = E.Message, Succes = false };
             }
 
 
 
 
         }
-        public async Task<Resultados> Modificar(ProveedorRequest request)
+        public async Task<Resultt> Modificar(ProveedorRequest request)
         {
             try
             {
                 var proveedor = await dbContext.Proveedores.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (proveedor == null)
-                    return new Resultados() { Message = "No se Encontro El Proveedor", Succes = false };
+                    return new Resultt() { Message = "No se Encontro El Proveedor", Success = false };
                 if (proveedor.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Resultt() { Message = "OK", Success = true };
 
 
 
@@ -74,20 +74,20 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Resultt() { Message = E.Message, Success = false };
             }
 
         }
-        public async Task<Resultados> Eliminar(ProveedorRequest request)
+        public async Task<Resultt> Eliminar(ProveedorRequest request)
         {
             try
             {
                 var proveedor = await dbContext.Proveedores.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (proveedor == null)
-                    return new Resultados() { Message = "No se Encontro El Producto", Succes = false };
+                    return new Resultt() { Message = "No se Encontro El Producto", Success = false };
                 dbContext.Proveedores.Remove(proveedor);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Resultt() { Message = "OK", Success = true };
 
 
             }
@@ -95,7 +95,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Resultt() { Message = E.Message, Success = false };
             }
 
 
@@ -119,7 +119,7 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<ProveedorResponse>>()
                 {
                     Message = "OK",
-                    Success = true,
+                    Succes = true,
                     Data = proveedor
                 };
             }
@@ -127,10 +127,14 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
+            
+
+
+
                 return new Result<List<ProveedorResponse>>()
                 {
                     Message = E.Message,
-                    Success = false,
+                    Succes = false,
                 };
 
             }

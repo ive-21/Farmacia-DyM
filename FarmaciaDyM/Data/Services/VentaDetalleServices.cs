@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmaciaDyM.Data.Services
 {
-    public class Resultando
+    public class Result
     {
         public bool Success { get; set; }
         public string? Message { get; set; }
+        public string message { get; internal set; }
+      
     }
 
 
@@ -17,7 +19,7 @@ namespace FarmaciaDyM.Data.Services
     {
 
         public bool Success { get; set; }
-        public string? Message { get; set; }
+        public string? message { get; set; }
         public T? Data;
     }
 
@@ -31,7 +33,7 @@ namespace FarmaciaDyM.Data.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<Resultados> Crear(VentasDetalleRequest request)
+        public async Task<Resultando> Crear(VentasDetalleRequest request)
         {
             try
             {
@@ -39,30 +41,30 @@ namespace FarmaciaDyM.Data.Services
 
                 dbContext.VentaDetalles.Add(venta);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Resultando() { Message = "OK", Success = true };
 
             }
 
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Resultando() { Message = E.Message, Success= false };
             }
 
 
 
 
         }
-        public async Task<Resultados> Eliminar(VentasDetalleRequest request)
+        public async Task<Resultando> Eliminar(VentasDetalleRequest request)
         {
             try
             {
                 var ventaDetalle = await dbContext.VentaDetalles.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (ventaDetalle == null)
-                    return new Resultados() { Message = "No se Encontro El Detalle", Succes = false };
+                    return new Resultando () { Message= "No se Encontro El Detalle", Success = false };
                 dbContext.VentaDetalles.Remove(ventaDetalle);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Resultando() { Message = "OK", Success = true };
 
 
             }
@@ -70,20 +72,20 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Resultando() { Message = E.Message, Success = false };
             }
 
         }
-        public async Task<Resultados> Modificar(VentasDetalleRequest request)
+        public async Task<Resultando> Modificar(VentasDetalleRequest request)
         {
             try
             {
                 var ventaDetalle = await dbContext.VentaDetalles.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (ventaDetalle == null)
-                    return new Resultados() { Message = "No se Encontro El Detalle de la venta", Succes = false };
+                    return new Resultando() { Message = "No se Encontro El Detalle de la venta", Success = false };
                 if (ventaDetalle.Modificar(request))
                     await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Resultando() { Message = "OK", Success= true };
 
 
 
@@ -93,7 +95,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Resultando() { Message = E.Message, Success = false };
             }
         }
 
@@ -110,7 +112,7 @@ namespace FarmaciaDyM.Data.Services
                 )
                 .Select(c => c.ToResponse())
                 .ToListAsync();
-                return new Result<List<VentaDetalleResponse>>()
+                return new Resultando<List<VentaDetalleResponse>>()
                 {
                     Message = "OK",
                     Success = true,
@@ -121,7 +123,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Result<List<VentaDetalleResponse>>()
+                return new Resultando<List<VentaDetalleResponse>>()
                 {
                     Message = E.Message,
                     Success = false,
@@ -131,5 +133,11 @@ namespace FarmaciaDyM.Data.Services
 
         }
 
+        private class Resultando<T> : Result<List<VentaDetalleResponse>>
+        {
+            public string Message { get; set; }
+            public bool Success { get; set; }
+            public List<VentaDetalleResponse> Data { get; set; }
+        }
     }
 }

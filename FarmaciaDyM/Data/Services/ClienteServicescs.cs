@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmaciaDyM.Data.Services
 {
-    public class Result
+    public class Resultando
     {
         public bool Success { get; set; }
         public string? Message { get; set; }
     }
 
      
-    public class Result<T>
+    public class Resultando<T>
     {
 
     public bool Success { get; set; }
@@ -41,15 +41,15 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = Cliente.crear(request);
 
-                dbContext.Clientes.Add(cliente);
+                dbContext.Clientes.Add(cliente); 
                 await dbContext.SaveChangesAsync();
-                return new Result() { Message = "OK", Success = true };
+                return new Result() {  message = "OK", Succes = true };
             }
 
             catch (Exception E)
             {
 
-                return new Result() { Message = E.Message, Success = false };
+                return new Result() { message = E.Message, Succes = false };
             }
         }
 
@@ -59,11 +59,11 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (cliente == null)
-                    return new Result() { Message = "No se Encontro El Cliente", Success = false };
+                    return new Result() { message= "No se Encontro El Cliente", Succes = false };
                 if (cliente.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Result() { Message = "OK", Success = true };
+                return new Result() { message = "OK", Succes = true };
 
 
 
@@ -73,7 +73,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Result() { Message = E.Message, Success = false };
+                return new Result() { message = E.Message, Succes = false };
             }
 
 
@@ -84,10 +84,10 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (cliente == null)
-                    return new Result() { Message = "No se Encontro El Cliente", Success = false };
+                    return new Result() { message = "No se Encontro El Cliente", Succes= false };
                 dbContext.Clientes.Remove(cliente);
                 await dbContext.SaveChangesAsync();
-                return new Result() { Message = "OK", Success = true };
+                return new Result() { message= "OK", Succes = true };
 
 
 
@@ -97,7 +97,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Result() { Message = E.Message, Success = false };
+                return new Result() { message = E.Message, Succes = false };
             }
 
         }
@@ -117,7 +117,7 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<ClienteResponse>>()
                 {
                     Message = "OK",
-                    Success = true,
+                    Succes= true,
                     Data = clientes
                 };
             }
@@ -128,9 +128,10 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<ClienteResponse>>()
                 {
                     Message = E.Message,
-                    Success = false,
+                    Succes = false,
                 };
-            }
+           
         }
     }
+}
 }

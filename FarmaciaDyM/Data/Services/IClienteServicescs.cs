@@ -10,4 +10,6 @@ namespace FarmaciaDyM.Data.Services
         Task<Result> Eliminar(ClientesRequest request);
         Task<Result> Modificar(ClientesRequest request);
     }
+
+    
 }

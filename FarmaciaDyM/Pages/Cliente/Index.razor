@@ -1,0 +1,24 @@
+﻿@page "/Cliente"
+<h3>Cliente</h3>
+
+@code {
+    public string filtro { get; set; } = "";
+    public List<ClienteResponse> Clientes { get; set; }
+        = new List<ClienteResponse>();
+
+    async Task CargarClientes()
+    {
+
+        var resultado = await clienteServices.Consultar(filtro);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarClientes();
+        if (Resultados) ;
+
+        
+    }
+
+}
+ 

@@ -7,7 +7,17 @@ using Microsoft.EntityFrameworkCore;
 namespace FarmaciaDyM.Data.Services
 {
 
-
+    public class Resulttando
+    {
+        public bool Success { get; set; }
+        public string? Message { get; set; }
+    }
+    public class Resulttando<T>
+    {
+        public bool Success { get; set; }
+        public string? Message { get; set; }
+        public T? Data { get; set; }
+    }
 
 
 
@@ -24,7 +34,7 @@ namespace FarmaciaDyM.Data.Services
 
         }
 
-        public async Task<Resultados> Crear(VentasRequest request)
+        public async Task<Result> Crear(VentasRequest request)
         {
             try
             {
@@ -32,29 +42,29 @@ namespace FarmaciaDyM.Data.Services
 
                 dbContext.Ventas.Add(venta);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Result() { message = "OK", Succes = true };
 
             }
 
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Result() { message = E.Message, Succes = false };
             }
 
         }
 
-        public async Task<Resultados> MOdificar(VentasRequest request)
+        public async Task<Result> MOdificar(VentasRequest request)
         {
             try
             {
                 var venta = await dbContext.Ventas.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (venta == null)
-                    return new Resultados() { Message = "No se Encontro La Venta", Succes = false };
+                    return new Result() { message = "No se Encontro La Venta", Succes = false };
                 if (venta.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Result() { message = "OK", Succes = true };
 
 
 
@@ -64,20 +74,20 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Result() { message = E.Message, Succes = false };
             }
         }
 
-        public async Task<Resultados> Eliminar(VentasRequest request)
+        public async Task<Result> Eliminar(VentasRequest request)
         {
             try
             {
                 var venta = await dbContext.Ventas.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (venta == null)
-                    return new Resultados() { Message = "No se Encontro El Producto", Succes = false };
+                    return new Result() { message= "No se Encontro El Producto", Succes = false };
                 dbContext.Ventas.Remove(venta);
                 await dbContext.SaveChangesAsync();
-                return new Resultados() { Message = "OK", Succes = true };
+                return new Result() { message= "OK", Succes = true };
 
 
             }
@@ -85,7 +95,7 @@ namespace FarmaciaDyM.Data.Services
             catch (Exception E)
             {
 
-                return new Resultados() { Message = E.Message, Succes = false };
+                return new Result() { message = E.Message, Succes = false };
             }
 
         }
@@ -105,7 +115,7 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<VentaResponse>>()
                 {
                     Message = "OK",
-                    Success = true,
+                    Succes = true,
                     Data = venta
                 };
             }
@@ -116,7 +126,7 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<VentaResponse>>()
                 {
                     Message = E.Message,
-                    Success = false,
+                    Succes= false,
                 };
 
 

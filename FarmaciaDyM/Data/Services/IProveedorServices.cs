@@ -6,8 +6,8 @@ namespace FarmaciaDyM.Data.Services
     public interface IProveedorServices
     {
         Task<Result<List<ProveedorResponse>>> Consultar(string Filtro);
-        Task<Resultados> Crear(ProveedorRequest request);
-        Task<Resultados> Eliminar(ProveedorRequest request);
-        Task<Resultados> Modificar(ProveedorRequest request);
+        Task<Resultando> Crear(ProveedorRequest request);
+        Task<Resultt> Eliminar(ProveedorRequest request);
+        Task<Resultt> Modificar(ProveedorRequest request);
     }
 }
