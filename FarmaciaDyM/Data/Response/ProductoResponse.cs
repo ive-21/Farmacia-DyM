@@ -1,4 +1,5 @@
 ﻿using FarmaciaDyM.Data.Entities;
+using FarmaciaDyM.Data.Request;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmaciaDyM.Data.Response
@@ -6,8 +7,8 @@ namespace FarmaciaDyM.Data.Response
     public class ProductoResponse
     {
         public int Id { get; set; }
-        public string Codigo { get; set; }
-        public string Nombre { get; set; }
+        public string Codigo { get; set; } = null!;
+        public string Nombre { get; set; } = null!;
         public decimal Costo { get; set; }
         public decimal Precio { get; set; }
         public int Existencia { get; set; }
@@ -15,7 +16,25 @@ namespace FarmaciaDyM.Data.Response
         public int ProveedorId { get; set; }
 
         [ForeignKey(nameof(ProveedorId))]
-        public virtual Proveedor Proveedor { get; set; }
+        public virtual Proveedor Proveedor { get; set; }  = null!;
 
+        public string NombreProveedortexto => Proveedor != null ? Proveedor.Nombre : "N/A";
+
+        public string CodigoDescripcion => $"({Codigo}) {Nombre}";
+
+        public ProductosRequest ToRequest()
+        {  
+            return new ProductosRequest 
+            { 
+                Id = Id,
+                Codigo = Codigo,
+                Nombre = Nombre, 
+                Costo = Costo, 
+                Precio = Precio, 
+                Existencia = Existencia,
+                FechaDeCaducidad = FechaDeCaducidad,
+                ProveedorId = ProveedorId
+            }; 
+        }
     }
 }

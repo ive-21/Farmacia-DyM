@@ -1,4 +1,5 @@
-﻿using FarmaciaDyM.Data.Context;
+﻿using System.Collections.Generic;
+using FarmaciaDyM.Data.Context;
 using FarmaciaDyM.Data.Entities;
 using FarmaciaDyM.Data.Request;
 using FarmaciaDyM.Data.Response;
@@ -6,18 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmaciaDyM.Data.Services
 {
-    public class Resultt
+    public interface IUsuarioServices
     {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
+        Task<Result<List<UsuariosResponse>>> Consultar(string filtro);
+        Task<Result> Crear(UsuariosRequest request);
+        Task<Result> Eliminar(UsuariosRequest request);
+        Task<Result> Modificar(UsuariosRequest request);
     }
-    public class Resultt<T>
-    {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
-        public T? Data { get; set; }
-    }
-
 
     public class UsuarioServices : IUsuarioServices
     {
@@ -28,107 +24,90 @@ namespace FarmaciaDyM.Data.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<Resultt> Crear(UsuariosRequest request)
+        public async Task<Result> Crear(UsuariosRequest request)
         {
             try
             {
-                var usuario = Usuario.crear(request);
-
-                dbContext.Usuarios.Add(usuario);
+                var contacto = Usuario.crear(request);
+                dbContext.Usuarios.Add(contacto);
                 await dbContext.SaveChangesAsync();
-                return new Resultt() { Message = "OK", Success = true };
-
-
-
-
+                return new Result() { Message = "Ok", Success = true };
             }
-
             catch (Exception E)
             {
 
-                return new Resultt() { Message = E.Message, Success = false };
+                return new Result() { Message = E.Message, Success = false };
             }
-
         }
-        public async Task<Resultt> MOdificar(UsuariosRequest request)
+        public async Task<Result> Modificar(UsuariosRequest request)
         {
             try
             {
-                var Usuario = await dbContext.Usuarios.FirstOrDefaultAsync(c => c.Id == request.Id);
-                if (Usuario == null)
-                    return new Resultt() { Message = "No se Encontro El Usuario", Success = false };
-                if (Usuario.Modificar(request))
+                var user = await dbContext.Usuarios
+                    .FirstOrDefaultAsync(c => c.Id == request.Id);
+                if (user == null)
+                    return new Result() { Message = "No se encontro el usuario", Success = false };
+
+                if (user.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Resultt() { Message = "OK", Success = true };
-
-
-
-
+                return new Result() { Message = "Ok", Success = true };
             }
-
             catch (Exception E)
             {
 
-                return new Resultt() { Message = E.Message, Success = false };
+                return new Result() { Message = E.Message, Success = false };
             }
-
         }
-        public async Task<Resultt> Eliminar(UsuariosRequest request)
+        public async Task<Result> Eliminar(UsuariosRequest request)
         {
             try
             {
-                var usuario = await dbContext.Usuarios.FirstOrDefaultAsync(c => c.Id == request.Id);
-                if (usuario == null)
-                    return new Resultt() { Message = "No se Encontro El Cliente", Success = false };
-                dbContext.Usuarios.Remove(usuario);
+                var contacto = await dbContext.Usuarios
+                    .FirstOrDefaultAsync(c => c.Id == request.Id);
+                if (contacto == null)
+                    return new Result() { Message = "No se encontro el usuario", Success = false };
+
+                dbContext.Usuarios.Remove(contacto);
                 await dbContext.SaveChangesAsync();
-                return new Resultt() { Message = "OK", Success = true };
-
-
-
-
+                return new Result() { Message = "Ok", Success = true };
             }
-
             catch (Exception E)
             {
 
-                return new Resultt() { Message = E.Message, Success = false };
+                return new Result() { Message = E.Message, Success = false };
             }
         }
-        public async Task<Resultt<List<UsuariosResponse>>> Consultar(string Filtro)
+        public async Task<Result<List<UsuariosResponse>>> Consultar(string filtro)
         {
             try
             {
-                var Usuario = await dbContext.Usuarios.Where(c =>
-
-               (c.Nombre + "" + c.Rol + " " + c.CorreoElectronico
-               )
-               .ToLower()
-               .Contains(Filtro.ToLower()
-               )
-               )
-               .Select(c => c.ToResponse())
-               .ToListAsync();
-                return new Resultt<List<UsuariosResponse>>()
+                var usuarios = await dbContext.Usuarios
+                    .Where(u =>
+                        (u.Nombre + " " + u.Rol + " " + u.CorreoElectronico + " " + u.Clave)
+                        .ToLower()
+                        .Contains(filtro.ToLower()
+                        )
+                    )
+                    .Select(u => u.ToResponse())
+                    .ToListAsync();
+                return new Result<List<UsuariosResponse>>()
                 {
-                    Message = "OK",
+                    Message = "Ok",
                     Success = true,
-                    Data = Usuario
+                    Data = usuarios
                 };
             }
-
             catch (Exception E)
             {
-
-                return new Resultt<List<UsuariosResponse>>()
+                return new Result<List<UsuariosResponse>>
                 {
                     Message = E.Message,
-                    Success = false,
+                    Success = false
                 };
             }
-
         }
+
     }
 }
 

@@ -1,8 +1,8 @@
-﻿@page "/clientes"
+@page "/usuarios"
 
 @if (!ShowForm)
 {
-    <h3>Clientes (@Customers.Count)</h3>
+    <h3>Usuarios (@Users.Count)</h3>
     <div class="mb-2">
         <button class="btn btn-success"
             @onclick="()=>{ShowForm = !ShowForm;}">
@@ -22,12 +22,16 @@
                 <InputText class="form-control" @bind-Value="@request.Nombre"></InputText>
             </div>
             <div class="mb-3 input-group">
-                <label class="input-group-text">Telefono</label>
-                <InputText class="form-control" @bind-Value="@request.Telefono"></InputText>
+                <label class="input-group-text">Rol</label>
+                <InputText class="form-control" @bind-Value="@request.Rol"></InputText>
             </div>
             <div class="mb-3 input-group">
-                <label class="input-group-text">Direccion</label>
-                <InputText class="form-control" @bind-Value="@request.Direccion"></InputText>
+                <label class="input-group-text">Correo</label>
+                <InputText class="form-control" @bind-Value="@request.CorreoElectronico"></InputText>
+            </div>
+            <div class="mb-3 input-group">
+                <label class="input-group-text">Clave</label>
+                <InputText class="form-control" @bind-Value="@request.Clave"></InputText>
             </div>
             
             <div class="btn-group">
@@ -43,17 +47,19 @@
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Telefono</th>
-                <th>Direccion</th>
+                <th>Rol</th>
+                <th>Correo</th>
+                <th>Clave</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var customer in Customers)
+            @foreach (var customer in Users)
             {
                 <tr>
                     <td>@customer.Nombre</td>
-                    <td>@customer.Telefono</td>
-                    <td>@customer.Direccion</td>
+                    <td>@customer.Rol</td>
+                    <td>@customer.CorreoElectronico</td>
+                    <td>@customer.Clave</td>
                     <td>
                         <div class="group">
                             <button class="btn btn-warning oi oi-pencil" @onclick="()=>Seleccionar(customer.Id)">
@@ -75,45 +81,46 @@
 </div>
 @code {
     public string TituloForm => request.Id == 0 ?
-    "Agregar cliente" : "Modificar cliente";
+    "Agregar usuario" : "Modificar usuario";
 
     public bool ShowForm { get; set; } = false;
     public string Filtro { get; set; } = "";
-    public List<ClienteResponse> Customers { get; set; }
-        = new List<ClienteResponse>();
+    public List<UsuariosResponse> Users { get; set; }
+        = new List<UsuariosResponse>();
 
-    public ClientesRequest request { get; set; } = new ClientesRequest();
+    public UsuariosRequest request { get; set; } = new UsuariosRequest();
 
     void Cancelar()
     {
-        request = new ClientesRequest();
+        request = new UsuariosRequest();
         ShowForm = false;
     }
-    async Task CargarClientes()
+    async Task CargarUsuarios()
     {
         var resultado =
-        await clienteServices.Consultar(Filtro);
+        await usuarioServices.Consultar(Filtro);
         if (resultado.Success)
         {
-            Customers = resultado.Data!;
+            Users = resultado.Data!;
         }
     }
 
-    public void Editar(ClienteResponse customer)
+    public void Editar(UsuariosResponse customer)
     {
         ShowForm = true;
-        request = new ClientesRequest
+        request = new UsuariosRequest
             {
                 Id = customer.Id,
                 Nombre = customer.Nombre,
-                Telefono = customer.Telefono,
-                Direccion = customer.Direccion
+                Rol = customer.Rol,
+                CorreoElectronico = customer.CorreoElectronico,
+                Clave = customer.Clave
             };
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarClientes();
+        await CargarUsuarios();
     }
 
     public async Task Send()
@@ -121,22 +128,22 @@
         if (request.Id == 0)
         {
             //Debo registrar el contacto..
-            var r = await clienteServices.Crear(request);
+            var r = await usuarioServices.Crear(request);
             if (r.Success)
             {
                 Cancelar();
-                await CargarClientes();
+                await CargarUsuarios();
                 StateHasChanged();
             }
         }
         else
         {
             //Debo solicitar modificar el contacto...
-            var r = await clienteServices.Modificar(request);
+            var r = await usuarioServices.Modificar(request);
             if (r.Success)
             {
                 Cancelar();
-                await CargarClientes();
+                await CargarUsuarios();
                 StateHasChanged();
             }
         }
@@ -145,18 +152,18 @@
     public void Seleccionar(int Id)
     {
         ShowForm = true;
-        request = Customers
+        request = Users
         .Where(c => c.Id == Id)
         .Select(c => c.ToRequest())
-        .FirstOrDefault() ?? new ClientesRequest();
+        .FirstOrDefault() ?? new UsuariosRequest();
     }
 
-    public async Task Eliminar(ClienteResponse customer)
+    public async Task Eliminar(UsuariosResponse customer)
     {
-        var resultado = await clienteServices.Eliminar(customer.ToRequest());
+        var resultado = await usuarioServices.Eliminar(customer.ToRequest());
         if (resultado.Success)
         {
-            await CargarClientes();
+            await CargarUsuarios();
             StateHasChanged();
         }
     }

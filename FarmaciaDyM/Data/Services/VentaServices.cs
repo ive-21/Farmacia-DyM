@@ -2,24 +2,18 @@
 using FarmaciaDyM.Data.Entities;
 using FarmaciaDyM.Data.Request;
 using FarmaciaDyM.Data.Response;
+using FarmaciaDyM.Data.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace FarmaciaDyM.Data.Services
 {
-
-    public class Resulttando
+    public interface IVentaServices
     {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
+        Task<Result<List<VentaResponse>>> Consultar();
+        Task<Result<VentaResponse>> Crear(VentasRequest request);
+        Task<Result> Eliminar(VentasRequest request);
+        Task<Result> Modificar(VentasRequest request);
     }
-    public class Resulttando<T>
-    {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
-        public T? Data { get; set; }
-    }
-
-
 
     public class VentaServices : IVentaServices
     {
@@ -28,53 +22,77 @@ namespace FarmaciaDyM.Data.Services
         public VentaServices(IMyDbContext dbContext)
         {
             this.dbContext = dbContext;
-            {
-
-            }
-
         }
 
-        public async Task<Result> Crear(VentasRequest request)
+        public async Task<Result<List<VentaResponse>>> Consultar()
         {
             try
             {
-                var venta = Venta.crear(request);
-
-                dbContext.Ventas.Add(venta);
-                await dbContext.SaveChangesAsync();
-                return new Result() { message = "OK", Succes = true };
-
+                var facturas = await dbContext.Ventas
+                    .Include(f => f.Cliente)
+                    .Include(f => f.Detalles)
+                    .ThenInclude(d => d.Producto)
+                    .Select(f => f.ToResponse())
+                    .ToListAsync();
+                return new Result<List<VentaResponse>>()
+                {
+                    Data = facturas,
+                    Success = true,
+                    Message = "Ok"
+                };
             }
-
             catch (Exception E)
             {
-
-                return new Result() { message = E.Message, Succes = false };
+                return new Result<List<VentaResponse>>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = E.Message
+                };
             }
-
         }
 
-        public async Task<Result> MOdificar(VentasRequest request)
+        public async Task<Result<VentaResponse>> Crear(VentasRequest request)
+        {
+            try
+            {
+                var factura = Venta.crear(request);
+                dbContext.Ventas.Add(factura);
+                await dbContext.SaveChangesAsync();
+                return new Result<VentaResponse>()
+                {
+                    Data = factura.ToResponse(),
+                    Success = true,
+                    Message = "Ok"
+                };
+            }
+            catch (Exception E)
+            {
+                return new Result<VentaResponse>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = E.Message
+                };
+            }
+        }
+
+        public async Task<Result> Modificar(VentasRequest request)
         {
             try
             {
                 var venta = await dbContext.Ventas.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (venta == null)
-                    return new Result() { message = "No se Encontro La Venta", Succes = false };
+                    return new Result() { Message = "No se Encontro La Venta", Success = false };
                 if (venta.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Result() { message = "OK", Succes = true };
-
-
-
-
+                return new Result() { Message = "OK", Success = true };
             }
-
             catch (Exception E)
             {
 
-                return new Result() { message = E.Message, Succes = false };
+                return new Result() { Message = E.Message, Success = false };
             }
         }
 
@@ -84,54 +102,19 @@ namespace FarmaciaDyM.Data.Services
             {
                 var venta = await dbContext.Ventas.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (venta == null)
-                    return new Result() { message= "No se Encontro El Producto", Succes = false };
+                    return new Result() { Message = "No se Encontro El Producto", Success = false };
                 dbContext.Ventas.Remove(venta);
                 await dbContext.SaveChangesAsync();
-                return new Result() { message= "OK", Succes = true };
+                return new Result() { Message = "OK", Success = true };
 
 
             }
-
             catch (Exception E)
             {
 
-                return new Result() { message = E.Message, Succes = false };
+                return new Result() { Message = E.Message, Success = false };
             }
 
-        }
-        public async Task<Result<List<VentaResponse>>> Consultar(string Filtro)
-        {
-            try
-            {
-                var venta = await dbContext.Ventas.Where(c =>
-
-                (c.Id + "" + c.ClienteId + " " + c.Detalles)
-                .ToLower()
-                .Contains(Filtro.ToLower()
-                )
-                )
-                .Select(c => c.ToResponse())
-                .ToListAsync();
-                return new Result<List<VentaResponse>>()
-                {
-                    Message = "OK",
-                    Succes = true,
-                    Data = venta
-                };
-            }
-
-            catch (Exception E)
-            {
-
-                return new Result<List<VentaResponse>>()
-                {
-                    Message = E.Message,
-                    Succes= false,
-                };
-
-
-
-            }
         }
     }
 

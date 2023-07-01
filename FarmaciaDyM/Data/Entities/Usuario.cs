@@ -7,10 +7,10 @@ namespace FarmaciaDyM.Data.Entities
     public class Usuario
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Rol { get; set; }
-        public string CorreoElectronico { get; set; }
-        public string Clave { get; set; }
+        public string Nombre { get; set; } = null!;
+        public string? Rol { get; set; }
+        public string CorreoElectronico { get; set; } = null!;
+        public string Clave { get; set; } = null!;
 
         public static Usuario crear(UsuariosRequest usuarios)
        => new Usuario()

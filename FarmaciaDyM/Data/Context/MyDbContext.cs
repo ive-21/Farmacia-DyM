@@ -1,6 +1,5 @@
 ﻿using FarmaciaDyM.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace FarmaciaDyM.Data.Context
 {
@@ -34,9 +33,3 @@ namespace FarmaciaDyM.Data.Context
         }
     }
 }
-
-
-
-
-
-

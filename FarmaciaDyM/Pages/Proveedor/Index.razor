@@ -1,8 +1,8 @@
-﻿@page "/clientes"
+@page "/proveedores"
 
 @if (!ShowForm)
 {
-    <h3>Clientes (@Customers.Count)</h3>
+    <h3>Proveedores (@Suppliers.Count)</h3>
     <div class="mb-2">
         <button class="btn btn-success"
             @onclick="()=>{ShowForm = !ShowForm;}">
@@ -17,6 +17,7 @@
         <EditForm Model="request" OnValidSubmit="Send">
             <DataAnnotationsValidator />
             <ValidationSummary />
+            
             <div class="mb-3 input-group">
                 <label class="input-group-text">Nombre</label>
                 <InputText class="form-control" @bind-Value="@request.Nombre"></InputText>
@@ -24,10 +25,6 @@
             <div class="mb-3 input-group">
                 <label class="input-group-text">Telefono</label>
                 <InputText class="form-control" @bind-Value="@request.Telefono"></InputText>
-            </div>
-            <div class="mb-3 input-group">
-                <label class="input-group-text">Direccion</label>
-                <InputText class="form-control" @bind-Value="@request.Direccion"></InputText>
             </div>
             
             <div class="btn-group">
@@ -44,16 +41,14 @@
             <tr>
                 <th>Nombre</th>
                 <th>Telefono</th>
-                <th>Direccion</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var customer in Customers)
+            @foreach (var customer in Suppliers)
             {
                 <tr>
                     <td>@customer.Nombre</td>
                     <td>@customer.Telefono</td>
-                    <td>@customer.Direccion</td>
                     <td>
                         <div class="group">
                             <button class="btn btn-warning oi oi-pencil" @onclick="()=>Seleccionar(customer.Id)">
@@ -75,45 +70,44 @@
 </div>
 @code {
     public string TituloForm => request.Id == 0 ?
-    "Agregar cliente" : "Modificar cliente";
+    "Agregar proveedor" : "Modificar proveedor";
 
     public bool ShowForm { get; set; } = false;
     public string Filtro { get; set; } = "";
-    public List<ClienteResponse> Customers { get; set; }
-        = new List<ClienteResponse>();
+    public List<ProveedorResponse> Suppliers { get; set; }
+        = new List<ProveedorResponse>();
 
-    public ClientesRequest request { get; set; } = new ClientesRequest();
+    public ProveedorRequest request { get; set; } = new ProveedorRequest();
 
     void Cancelar()
     {
-        request = new ClientesRequest();
+        request = new ProveedorRequest();
         ShowForm = false;
     }
-    async Task CargarClientes()
+    async Task CargarProveedores()
     {
         var resultado =
-        await clienteServices.Consultar(Filtro);
+        await proveedorServices.Consultar(Filtro);
         if (resultado.Success)
         {
-            Customers = resultado.Data!;
+            Suppliers = resultado.Data!;
         }
     }
 
-    public void Editar(ClienteResponse customer)
+    public void Editar(ProveedorResponse customer)
     {
         ShowForm = true;
-        request = new ClientesRequest
+        request = new ProveedorRequest
             {
                 Id = customer.Id,
                 Nombre = customer.Nombre,
-                Telefono = customer.Telefono,
-                Direccion = customer.Direccion
+                Telefono = customer.Telefono
             };
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarClientes();
+        await CargarProveedores();
     }
 
     public async Task Send()
@@ -121,22 +115,22 @@
         if (request.Id == 0)
         {
             //Debo registrar el contacto..
-            var r = await clienteServices.Crear(request);
+            var r = await proveedorServices.Crear(request);
             if (r.Success)
             {
                 Cancelar();
-                await CargarClientes();
+                await CargarProveedores();
                 StateHasChanged();
             }
         }
         else
         {
             //Debo solicitar modificar el contacto...
-            var r = await clienteServices.Modificar(request);
+            var r = await proveedorServices.Modificar(request);
             if (r.Success)
             {
                 Cancelar();
-                await CargarClientes();
+                await CargarProveedores();
                 StateHasChanged();
             }
         }
@@ -145,18 +139,18 @@
     public void Seleccionar(int Id)
     {
         ShowForm = true;
-        request = Customers
+        request = Suppliers
         .Where(c => c.Id == Id)
         .Select(c => c.ToRequest())
-        .FirstOrDefault() ?? new ClientesRequest();
+        .FirstOrDefault() ?? new ProveedorRequest();
     }
 
-    public async Task Eliminar(ClienteResponse customer)
+    public async Task Eliminar(ProveedorResponse customer)
     {
-        var resultado = await clienteServices.Eliminar(customer.ToRequest());
+        var resultado = await proveedorServices.Eliminar(customer.ToRequest());
         if (resultado.Success)
         {
-            await CargarClientes();
+            await CargarProveedores();
             StateHasChanged();
         }
     }

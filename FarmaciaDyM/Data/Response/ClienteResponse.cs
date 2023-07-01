@@ -1,4 +1,6 @@
-﻿namespace FarmaciaDyM.Data.Response
+﻿using FarmaciaDyM.Data.Request;
+
+namespace FarmaciaDyM.Data.Response
 {
     public class ClienteResponse
     {
@@ -7,5 +9,15 @@
         public string Telefono { get; set; } = null!;
         public string Direccion { get; set; } = null!;
 
+        public ClientesRequest ToRequest()
+        {  
+            return new ClientesRequest 
+            { 
+                Id = Id,
+                Nombre = Nombre,
+                Telefono = Telefono, 
+                Direccion = Direccion
+            }; 
+        }
     }
 }

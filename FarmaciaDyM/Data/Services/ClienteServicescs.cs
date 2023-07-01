@@ -6,25 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmaciaDyM.Data.Services
 {
-    public class Resultando
+    public interface IClienteServicescs
     {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
+        Task<Result<List<ClienteResponse>>> Consultar(string Filtro);
+        Task<Result> Crear(ClientesRequest request);
+        Task<Result> Eliminar(ClientesRequest request);
+        Task<Result> Modificar(ClientesRequest request);
     }
-
-     
-    public class Resultando<T>
-    {
-
-    public bool Success { get; set; }
-    public string? Message { get; set; }
-        public T? Data;
-    }
-
-
-
-
-
 
     public class ClienteServicescs : IClienteServicescs
     {
@@ -41,15 +29,13 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = Cliente.crear(request);
 
-                dbContext.Clientes.Add(cliente); 
+                dbContext.Clientes.Add(cliente);
                 await dbContext.SaveChangesAsync();
-                return new Result() {  message = "OK", Succes = true };
+                return new Result() { Message = "OK", Success = true };
             }
-
             catch (Exception E)
             {
-
-                return new Result() { message = E.Message, Succes = false };
+                return new Result() { Message = E.Message, Success = false };
             }
         }
 
@@ -59,24 +45,17 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (cliente == null)
-                    return new Result() { message= "No se Encontro El Cliente", Succes = false };
+                    return new Result() { Message = "No se Encontro El Cliente", Success = false };
                 if (cliente.Modificar(request))
                     await dbContext.SaveChangesAsync();
 
-                return new Result() { message = "OK", Succes = true };
-
-
-
-
+                return new Result() { Message = "OK", Success = true };
             }
-
             catch (Exception E)
             {
 
-                return new Result() { message = E.Message, Succes = false };
+                return new Result() { Message = E.Message, Success = false };
             }
-
-
         }
         public async Task<Result> Eliminar(ClientesRequest request)
         {
@@ -84,20 +63,14 @@ namespace FarmaciaDyM.Data.Services
             {
                 var cliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Id == request.Id);
                 if (cliente == null)
-                    return new Result() { message = "No se Encontro El Cliente", Succes= false };
+                    return new Result() { Message = "No se Encontro El Cliente", Success = false };
                 dbContext.Clientes.Remove(cliente);
                 await dbContext.SaveChangesAsync();
-                return new Result() { message= "OK", Succes = true };
-
-
-
-
+                return new Result() { Message = "OK", Success = true };
             }
-
             catch (Exception E)
             {
-
-                return new Result() { message = E.Message, Succes = false };
+                return new Result() { Message = E.Message, Success = false };
             }
 
         }
@@ -117,21 +90,20 @@ namespace FarmaciaDyM.Data.Services
                 return new Result<List<ClienteResponse>>()
                 {
                     Message = "OK",
-                    Succes= true,
+                    Success = true,
                     Data = clientes
                 };
             }
-
             catch (Exception E)
             {
 
                 return new Result<List<ClienteResponse>>()
                 {
                     Message = E.Message,
-                    Succes = false,
+                    Success = false,
                 };
-           
+
+            }
         }
     }
-}
 }

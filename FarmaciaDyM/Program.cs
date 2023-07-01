@@ -3,6 +3,8 @@ using FarmaciaDyM.Data.Context;
 using FarmaciaDyM.Data.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Farmacia_DyM.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +17,7 @@ builder.Services.AddScoped<IMyDbContext, MyDbContext>();
 builder.Services.AddScoped<IClienteServicescs, ClienteServicescs>();
 builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
 builder.Services.AddScoped<IProductoServices, ProductoServices>();
-builder.Services.AddScoped<IProveedorServices, ProveedorServices>();
-builder.Services.AddScoped<IVentaDetalleServices, VentaDetalleServices>();
+builder.Services.AddScoped<IProveedorServices ,ProveedorServices>();
 builder.Services.AddScoped<IVentaServices, VentaServices>();
 
 
